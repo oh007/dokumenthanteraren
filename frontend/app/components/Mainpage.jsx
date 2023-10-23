@@ -1,7 +1,8 @@
 import MyDocs from "./Docs";
 import Header from "./Header";
 
-const MainPage = () => (
+console.log(MyDocs.docTitle,MyDocs.docContent)
+const MainPage = (post) => (
   <>
     <Header />
     
@@ -9,9 +10,7 @@ const MainPage = () => (
     <div className="w-screen flex flex-col m-auto items-center">
     <h2 className="font-bold pb-4 ">My docs</h2>
 
-    <MyDocs />
-    <MyDocs />
-    <MyDocs />
+    <MyDocs docTitle={post.docTitle} docContent={post.docContent} />
     </div>
   </>
 );
