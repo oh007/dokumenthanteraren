@@ -6,20 +6,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const MainPage = () => {
-  const [posts, setPosts] = useState([]);
+  const [post,setPosts]= useState([])
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [showInputs, setShowInputs] = useState(false);
 
-  const getPosts = async () => {
+ const getPosts = async () => {
     try {
-      const result = await fetch("/api");
+      const result = await fetch("/api/docs");
       const postsFromApi = await result.json();
       setPosts(postsFromApi);
     } catch (error) {
       console.error('Något gick fel vid hämtning av data:', error);
     }
-  };
+  }; 
 
   useEffect(() => {
     getPosts();
@@ -40,7 +40,7 @@ const MainPage = () => {
   const handleSaveDoc = async () => {
     console.log(title,content)
     try {
-      const response = await fetch("/api", {
+      const response = await fetch("/api/docs", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -64,6 +64,23 @@ const MainPage = () => {
     }
   };
 
+
+  const handleDelete = async (post) => {
+    console.log("hej", post)
+    try {
+      const response = await fetch("/api/docs/"+ post, {
+        method: "DELETE",
+      });
+  
+      if (response.ok) {
+        getPosts();
+      } else {
+        console.error("Något gick fel vid radering av dokumentet.");
+      }
+    } catch (error) {
+      console.error("Något gick fel vid radering av dokumentet:", error);
+    }
+  };
   return (
     <>
       <Header />
@@ -98,14 +115,16 @@ const MainPage = () => {
         </div>
         <h2 className="font-bold pb-4">My docs</h2>
         
-        {posts.map((post, index) => (
-          <MyDocs
-            key={post.id}
-            docTitle={post.docTitle}
-            docContent={post.docContent}
-            createDate={post.createDate}
-          />
-        ))}
+        {post.map((post, index) => (
+  <MyDocs
+    key={post.id}
+    docTitle={post.docTitle}
+    docContent={post.docContent}
+    createDate={post.createDate}
+    post={post.id}
+    onDelete={() => handleDelete(post.id)}
+  />
+))}
       </div>
     </>
   );
