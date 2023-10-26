@@ -16,6 +16,9 @@ const MyDocs = (props) => {
     setIsEditing(false);
   };
 
+
+
+
   return (
     <div className="flex w-9/12 mb-8 gap-10 p-5 border rounded-md border-slate-300 hover:border-slate-400">
       <FontAwesomeIcon icon={faFile} size="xs" className="w-5" />
@@ -34,7 +37,6 @@ const MyDocs = (props) => {
           <button onClick={handleSaveClick}>Save</button>
         </div>
       ) : (
-        // Visningsläge
         <div>
           <p>{editedTitle}</p>
           <p>{editedContent}</p>
@@ -43,6 +45,12 @@ const MyDocs = (props) => {
       <p>{props.createDate}</p>
       <button onClick={handleEditClick}>
         <FontAwesomeIcon icon={faEdit} size="xs" className="w-5" />
+      </button>
+      <button
+        onClick={() => props.onDelete()}
+        className="bg-red-600 m-1 p-2 min-w-[60px] rounded-[7px]"
+      >
+        Delete
       </button>
     </div>
   );
