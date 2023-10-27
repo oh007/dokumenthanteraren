@@ -2,6 +2,18 @@ import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faEdit, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons';
 
+function formatDateTime(dateTimeString) {
+  const options = {
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+  };
+  const date = new Date(dateTimeString);
+  return date.toLocaleString('sv-SE', options);
+}
+
 const MyDocs = (props) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedTitle, setEditedTitle] = useState(props.docTitle || '');
@@ -32,18 +44,18 @@ const MyDocs = (props) => {
               value={editedTitle}
               onChange={(e) => setEditedTitle(e.target.value)}
               style={{
-                writingMode: 'vertical-rl',   
-                textOrientation: 'mixed',      
+                writingMode: 'vertical-rl',
+                textOrientation: 'mixed',
               }}
             />
             <input
-              className="w-full h-80 mb-2 p-2 border border-slate-700 rounded" 
+              className="w-full h-80 mb-2 p-2 border border-slate-700 rounded"
               type="text"
               value={editedContent}
               onChange={(e) => setEditedContent(e.target.value)}
               style={{
-                writingMode: 'vertical-rl',   
-                textOrientation: 'mixed',     
+                writingMode: 'vertical-rl',
+                textOrientation: 'mixed',
               }}
             />
             <button
@@ -59,7 +71,7 @@ const MyDocs = (props) => {
             <p>{props.isExpanded ? editedContent : ''}</p>
           </div>
         )}
-        <p className="text-sm">{props.createDate}</p>
+        <p className="text-sm">{formatDateTime(props.createDate)}</p> 
         <button onClick={handleEditClick}>
           <FontAwesomeIcon icon={faEdit} size="xs" className="w-5" />
         </button>
@@ -75,7 +87,7 @@ const MyDocs = (props) => {
         </button>
         <button
           onClick={() => props.onDelete()}
-          className="flex w-40 place-content-around bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
+          className="flex w-40 place-content-around bg-red-500 hover.bg-red-700 text-white font-bold py-2 px-4 border border-blue-700 rounded"
         >
           Delete
         </button>
