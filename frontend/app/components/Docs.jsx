@@ -1,22 +1,21 @@
+"use client"
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFile, faEdit } from '@fortawesome/free-solid-svg-icons';
 
 const MyDocs = (props) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [editedTitle, setEditedTitle] = useState(props.docTitle);
-  const [editedContent, setEditedContent] = useState(props.content);
+  const [editedTitle, setEditedTitle] = useState(props.docTitle || ''); // Använd ett tomt strängvärde som standard om det är odefinierat
+  const [editedContent, setEditedContent] = useState(props.docContent || '');
 
   const handleEditClick = () => {
     setIsEditing(true);
   };
 
   const handleSaveClick = () => {
-
+    props.onSave(editedTitle, editedContent);
     setIsEditing(false);
   };
-
-
 
 
   return (
@@ -38,7 +37,7 @@ const MyDocs = (props) => {
         </div>
       ) : (
         <div>
-          <p>{editedTitle}</p>
+          <h2>{editedTitle}</h2>
           <p>{editedContent}</p>
         </div>
       )}

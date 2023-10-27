@@ -81,6 +81,28 @@ const MainPage = () => {
       console.error("Något gick fel vid radering av dokumentet:", error);
     }
   };
+
+  const handleSave = async (post, updatedTitle, updatedContent) => {
+    console.log(post, updatedTitle,updatedContent)
+    try {
+      const response = await fetch("/api/docs/"+ post, {
+        method: "PATCH",
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ updatedTitle, updatedContent }),
+      });
+  console.log(response,"response")
+      if (response.ok) {
+        console.log("hejsan!")
+        getPosts();
+      } else {
+        console.error('Något gick fel vid PATCH-förfrågan.');
+      }
+    } catch (error) {
+      console.error('Något gick fel vid PATCH-förfrågan:', error);
+    }
+  };
   return (
     <>
       <Header />
@@ -117,12 +139,15 @@ const MainPage = () => {
         
         {post.map((post, index) => (
   <MyDocs
-    key={post.id}
+    key={index}
     docTitle={post.docTitle}
     docContent={post.docContent}
     createDate={post.createDate}
     post={post.id}
     onDelete={() => handleDelete(post.id)}
+    onSave={(updatedTitle, updatedContent) =>
+      handleSave(post.id, updatedTitle, updatedContent)
+    }
   />
 ))}
       </div>
