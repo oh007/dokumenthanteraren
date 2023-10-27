@@ -6,10 +6,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 
 const MainPage = () => {
-  const [post, setPosts] = useState([]);
-  const [title, setTitle] = useState('');
-  const [content, setContent] = useState('');
+  const [posts, setPosts] = useState([]);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
   const [showInputs, setShowInputs] = useState(false);
+  const [expandedDocs, setExpandedDocs] = useState([]); 
 
   const getPosts = async () => {
     try {
@@ -45,13 +46,14 @@ const MainPage = () => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          title, content 
+          title,
+          content,
         }),
       });
 
       if (response.ok) {
-        setTitle('');
-        setContent('');
+        setTitle("");
+        setContent("");
         setShowInputs(false);
         getPosts();
       } else {
@@ -83,7 +85,7 @@ const MainPage = () => {
       const response = await fetch("/api/docs/" + post, {
         method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ updatedTitle, updatedContent }),
       });
@@ -91,11 +93,19 @@ const MainPage = () => {
       if (response.ok) {
         getPosts();
       } else {
-        console.error('Något gick fel vid PATCH-förfrågan.');
+        console.error("Något gick fel vid PATCH-förfrågan.");
       }
     } catch (error) {
-      console.error('Något gick fel vid PATCH-förfrågan:', error);
+      console.error("Något gick fel vid PATCH-förfrågan:", error);
     }
+  };
+
+  const handleToggleDoc = (docId) => {
+    setExpandedDocs((prevExpandedDocs) =>
+      prevExpandedDocs.includes(docId)
+        ? prevExpandedDocs.filter((id) => id !== docId)
+        : [...prevExpandedDocs, docId]
+    );
   };
 
   return (
@@ -111,6 +121,10 @@ const MainPage = () => {
                 value={title}
                 onChange={handleTitleChange}
                 className="w-full mb-4 p-2 rounded border"
+                style={{
+                  writingMode: 'vertical-rl',  
+                  textOrientation: 'mixed',      
+                }}
               />
               <input
                 type="text"
@@ -118,6 +132,10 @@ const MainPage = () => {
                 value={content}
                 onChange={handleContentChange}
                 className="w-full h-40 mb-4 p-2 rounded border"
+                style={{
+                  writingMode: 'vertical-rl',   
+                  textOrientation: 'mixed',      
+                }}
               />
               <button
                 className="w-full bg-green-500 hover.bg-green-700 text-white font-bold py-2 px-4 rounded"
@@ -136,11 +154,10 @@ const MainPage = () => {
             </button>
           )}
         </div>
-        {!showInputs && <h2 className="font-bold pb-4">My docs</h2>}
         {showInputs ? null : (
-          post.map((post, index) => (
+          posts.map((post) => (
             <MyDocs
-              key={index}
+              key={post.id}
               docTitle={post.docTitle}
               docContent={post.docContent}
               createDate={post.createDate}
@@ -149,6 +166,8 @@ const MainPage = () => {
               onSave={(updatedTitle, updatedContent) =>
                 handleSave(post.id, updatedTitle, updatedContent)
               }
+              onToggle={() => handleToggleDoc(post.id)}
+              isExpanded={expandedDocs.includes(post.id)}
             />
           ))
         )}
